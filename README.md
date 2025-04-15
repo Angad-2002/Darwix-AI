@@ -1,4 +1,4 @@
-# Darwix-AI
+# Darwix-AI Project
 
 A Django-based AI service that provides two main features:
 1. Audio transcription with speaker diarization
