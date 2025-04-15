@@ -8,6 +8,9 @@ from django.core.files.base import ContentFile
 import json
 import traceback
 import logging
+import tempfile
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from .services import TranscriptionService, TitleSuggestionService
 from .models import BlogPost, Transcription
@@ -16,42 +19,78 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 
-@csrf_exempt
-@require_http_methods(["POST"])
-def transcribe_audio(request):
+@api_view(['POST'])
+def transcribe(request):
     try:
         if 'audio_file' not in request.FILES:
-            return JsonResponse({'error': 'No audio file provided'}, status=400)
+            return JsonResponse(
+                {'error': 'No audio file provided'},
+                json_dumps_params={'indent': 4, 'ensure_ascii': False},
+                status=400
+            )
 
         audio_file = request.FILES['audio_file']
         
-        # Save the file temporarily
-        file_path = default_storage.save(
-            f'audio_files/{audio_file.name}',
-            ContentFile(audio_file.read())
-        )
-        
-        # Get the full path
-        full_path = default_storage.path(file_path)
-        
-        # Initialize service and process
-        service = TranscriptionService()
-        result = service.transcribe_audio(full_path)
-        
-        # Clean up the temporary file
-        default_storage.delete(file_path)
-        
-        # Save transcription to database
-        Transcription.objects.create(
-            audio_file=file_path,
-            transcription_text=json.dumps(result)
-        )
-        
-        return JsonResponse(result)
-    
+        # Check file size (10MB limit)
+        if audio_file.size > 10 * 1024 * 1024:
+            return JsonResponse(
+                {'error': 'File size exceeds 10MB limit'},
+                json_dumps_params={'indent': 4, 'ensure_ascii': False},
+                status=400
+            )
+
+        # Check file type
+        if not audio_file.name.lower().endswith(('.mp3', '.wav', '.m4a', '.ogg')):
+            return JsonResponse(
+                {'error': 'Invalid file type. Supported types: mp3, wav, m4a, ogg'},
+                json_dumps_params={'indent': 4, 'ensure_ascii': False},
+                status=400
+            )
+
+        # Save the uploaded file temporarily
+        with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(audio_file.name)[1]) as temp_file:
+            for chunk in audio_file.chunks():
+                temp_file.write(chunk)
+            temp_path = temp_file.name
+
+        try:
+            # Process the audio file
+            transcription_service = TranscriptionService()
+            result = transcription_service.transcribe_audio(temp_path)
+
+            # Remove temporary file
+            os.unlink(temp_path)
+
+            if 'error' in result:
+                return JsonResponse(
+                    {'error': result['error']},
+                    json_dumps_params={'indent': 4, 'ensure_ascii': False},
+                    status=500
+                )
+
+            return JsonResponse(
+                result,
+                json_dumps_params={'indent': 4, 'ensure_ascii': False}
+            )
+
+        except Exception as e:
+            # Clean up temp file in case of error
+            if os.path.exists(temp_path):
+                os.unlink(temp_path)
+            logger.error(f"Error during transcription: {str(e)}")
+            return JsonResponse(
+                {'error': f'Transcription failed: {str(e)}'},
+                json_dumps_params={'indent': 4, 'ensure_ascii': False},
+                status=500
+            )
+
     except Exception as e:
-        logger.error(f"Error in transcribe_audio: {str(e)}\n{traceback.format_exc()}")
-        return JsonResponse({'error': str(e)}, status=500)
+        logger.error(f"Error in transcribe view: {str(e)}")
+        return JsonResponse(
+            {'error': f'Server error: {str(e)}'},
+            json_dumps_params={'indent': 4, 'ensure_ascii': False},
+            status=500
+        )
 
 @csrf_exempt
 @require_http_methods(["POST"])

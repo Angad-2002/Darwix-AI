@@ -1,13 +1,15 @@
-# Sunobot Interface
+# Darwix-AI
 
-A Django-based web application that provides AI-powered features for content creation and management.
+A Django-based AI service that provides two main features:
+1. Audio transcription with speaker diarization
+2. AI-powered title suggestions for blog posts
 
 ## Features
 
-- Audio Transcription with Speaker Diarization
-- AI-Powered Title Suggestions
-- Blog Post Management
-- User Authentication
+* **Audio Transcription**: Uses Whisper for transcription and pyannote.audio for speaker diarization
+* **Title Generation**: Uses facebook/opt-350m model to generate engaging titles for content
+* **RESTful API**: Easy to integrate with any frontend application
+* **Local Models**: All AI processing is done locally, no external API costs
 
 ## Screenshots
 
@@ -19,14 +21,7 @@ A Django-based web application that provides AI-powered features for content cre
 ![Title Suggestions](docs/images/title-suggestions.png)
 *Example of AI-generated title suggestions for a blog post*
 
-## Prerequisites
-
-- Python 3.8+
-- FFmpeg
-- OpenAI API Key
-- HuggingFace API Token
-
-## Installation
+## Setup
 
 1. Clone the repository:
 ```bash
@@ -45,7 +40,8 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-4. Create a `.env` file in the project root with your API keys:
+4. Set up environment variables:
+Create a `.env` file in the root directory with:
 ```
 OPENAI_API_KEY=your_openai_api_key
 HF_TOKEN=your_huggingface_token
@@ -175,4 +171,4 @@ Example error response:
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+This project is licensed under the MIT License - see the LICENSE file for details.
