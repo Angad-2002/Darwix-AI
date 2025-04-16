@@ -1,0 +1,82 @@
+.file-input {
+  display: none;
+}
+
+/* Drag and drop styles */
+.upload-zone {
+  position: relative;
+  transition: all 0.3s ease;
+  border: 2px dashed rgba(78, 123, 239, 0.3);
+  border-radius: 16px;
+  padding: 32px;
+}
+
+.upload-zone.drag-active {
+  border-color: #4e7bef;
+  background: rgba(78, 123, 239, 0.05);
+  transform: scale(1.02);
+  box-shadow: 0 0 20px rgba(78, 123, 239, 0.1);
+}
+
+/* Dark mode styles */
+[data-theme="dark"] .upload-zone {
+  border-color: rgba(78, 123, 239, 0.5);
+}
+
+[data-theme="dark"] .upload-zone.drag-active {
+  background: rgba(78, 123, 239, 0.15);
+  box-shadow: 0 0 20px rgba(78, 123, 239, 0.2);
+}
+
+/* Prevent text selection during drag */
+.upload-zone * {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Smooth scrolling for the entire page */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Better text rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Dark mode scrollbar */
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+} 

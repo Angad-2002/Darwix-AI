@@ -172,3 +172,199 @@ Example error response:
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+# Sunobot Interface
+
+A modern web application for AI-powered audio transcription and title generation.
+
+## Project Structure
+
+```
+sunobot-interface/
+├── frontend/          # React + Vite frontend
+└── backend/           # Django backend API
+```
+
+## Deployment Guide
+
+### Backend Deployment (Django)
+
+1. **Prerequisites**
+   - Python 3.8+
+   - PostgreSQL
+   - Redis (optional, for caching)
+
+2. **Environment Setup**
+   ```bash
+   # Create and activate virtual environment
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   
+   # Install dependencies
+   cd backend
+   pip install -r requirements.txt
+   ```
+
+3. **Environment Variables**
+   Create a `.env` file in the backend directory:
+   ```
+   DEBUG=False
+   SECRET_KEY=your-secret-key
+   ALLOWED_HOSTS=your-domain.com,www.your-domain.com
+   DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+   CORS_ALLOWED_ORIGINS=https://your-frontend-domain.com
+   ```
+
+4. **Database Setup**
+   ```bash
+   python manage.py migrate
+   python manage.py collectstatic
+   ```
+
+5. **Production Server**
+   ```bash
+   # Install Gunicorn
+   pip install gunicorn
+
+   # Start Gunicorn
+   gunicorn backend.wsgi:application --bind 0.0.0.0:8000
+   ```
+
+6. **Nginx Configuration**
+   ```nginx
+   server {
+       listen 80;
+       server_name your-domain.com;
+
+       location / {
+           proxy_pass http://127.0.0.1:8000;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+       }
+
+       location /static/ {
+           alias /path/to/your/static/files/;
+       }
+
+       location /media/ {
+           alias /path/to/your/media/files/;
+       }
+   }
+   ```
+
+### Frontend Deployment (React + Vite)
+
+1. **Prerequisites**
+   - Node.js 16+
+   - npm or yarn
+
+2. **Environment Setup**
+   Create a `.env` file in the frontend directory:
+   ```
+   VITE_API_URL=https://your-backend-domain.com
+   ```
+
+3. **Build for Production**
+   ```bash
+   cd frontend
+   npm install
+   npm run build
+   ```
+
+4. **Deploy Static Files**
+   The built files will be in the `dist` directory. You can serve these files using Nginx:
+
+   ```nginx
+   server {
+       listen 80;
+       server_name your-frontend-domain.com;
+       root /path/to/frontend/dist;
+       index index.html;
+
+       location / {
+           try_files $uri $uri/ /index.html;
+       }
+   }
+   ```
+
+### Deployment Options
+
+1. **Traditional VPS/Dedicated Server**
+   - Set up a Linux server (Ubuntu/Debian recommended)
+   - Install required software (Nginx, PostgreSQL, Python, Node.js)
+   - Follow the backend and frontend deployment steps above
+   - Use systemd to manage the Gunicorn process
+
+2. **Docker Deployment**
+   - Use the provided Dockerfile and docker-compose.yml
+   - Build and run containers:
+     ```bash
+     docker-compose up -d
+     ```
+
+3. **Cloud Platforms**
+   - **Heroku**:
+     - Add Procfile for backend
+     - Configure environment variables
+     - Deploy using Heroku Git or GitHub integration
+
+   - **Vercel/Netlify** (Frontend):
+     - Connect your GitHub repository
+     - Set build command: `npm run build`
+     - Set output directory: `dist`
+
+   - **AWS**:
+     - Use Elastic Beanstalk for backend
+     - Use S3 + CloudFront for frontend
+     - Set up RDS for database
+
+## Security Considerations
+
+1. **SSL/TLS**
+   - Install SSL certificates (Let's Encrypt recommended)
+   - Force HTTPS redirects
+   - Set secure headers
+
+2. **API Security**
+   - Use environment variables for sensitive data
+   - Implement rate limiting
+   - Set up CORS properly
+   - Use secure session cookies
+
+3. **Database**
+   - Regular backups
+   - Use connection pooling
+   - Set up proper user permissions
+
+## Monitoring
+
+1. **Backend Monitoring**
+   - Set up logging
+   - Use Sentry for error tracking
+   - Monitor server resources
+
+2. **Frontend Monitoring**
+   - Implement error boundary
+   - Use analytics tools
+   - Monitor performance metrics
+
+## Maintenance
+
+1. **Regular Updates**
+   - Keep dependencies updated
+   - Monitor security advisories
+   - Regular database maintenance
+
+2. **Backup Strategy**
+   - Daily database backups
+   - Regular configuration backups
+   - Document recovery procedures
+
+## Support
+
+For deployment support or issues:
+1. Check the issues section in the repository
+2. Contact the development team
+3. Review logs for detailed error information
