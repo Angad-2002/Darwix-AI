@@ -30,7 +30,12 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'your-default-secret-key-for-dev')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', '0').lower() in ['true', 't', '1']
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = [
+    'darwix-ai.onrender.com',
+    'localhost',
+    '127.0.0.1',
+    '.onrender.com',  # Allows all subdomains on render.com
+]
 
 
 # Application definition
