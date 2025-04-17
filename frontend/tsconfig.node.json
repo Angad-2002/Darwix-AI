@@ -6,7 +6,8 @@
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "lib": ["ES2022"]
+    "lib": ["ES2022"],
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["vite.config.ts"]
 }

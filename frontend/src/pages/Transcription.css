@@ -30,10 +30,10 @@
 
 /* Prevent text selection during drag */
 .upload-zone * {
-  user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  user-select: none;
 }
 
 /* Smooth scrolling for the entire page */
@@ -79,4 +79,82 @@ body {
 
 [data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
+}
+
+.drop-zone {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.drop-zone:hover {
+  border-color: #2196f3;
+  background: rgba(33, 150, 243, 0.1);
+}
+
+.drop-zone.drag-over {
+  border-color: #4caf50;
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.transcription-container {
+  margin-top: 20px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.segment {
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.segment:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(4px);
+}
+
+.timestamp {
+  font-family: 'Roboto Mono', monospace;
+  color: #90caf9;
+  font-size: 0.9em;
+  margin-bottom: 4px;
+}
+
+.speaker {
+  font-weight: 500;
+  color: #64b5f6;
+  margin-bottom: 4px;
+}
+
+.text {
+  color: #e0e0e0;
+  line-height: 1.5;
+}
+
+.export-button {
+  margin: 8px;
+}
+
+.confidence-bar {
+  height: 4px;
+  background: linear-gradient(90deg, #4caf50, #8bc34a);
+  border-radius: 2px;
+  margin-top: 8px;
 } 
