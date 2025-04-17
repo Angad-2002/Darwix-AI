@@ -17,6 +17,9 @@ services:
     name: darwix-ai
     env: docker
     dockerfilePath: ./Dockerfile
+    dockerCommand: |
+      docker build -t darwix-ai .
+      docker run -p 8000:8000 darwix-ai
     envVars:
       - key: DEBUG
         value: False
