@@ -10,6 +10,13 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV OMP_NUM_THREADS=1
+ENV MKL_NUM_THREADS=1
+ENV NUMEXPR_NUM_THREADS=1
+ENV OPENBLAS_NUM_THREADS=1
+
 # Copy requirements first to leverage Docker cache
 COPY requirements.txt .
 
@@ -33,5 +40,5 @@ EXPOSE 8000
 # Use the entrypoint script
 ENTRYPOINT ["/app/entrypoint.sh"]
 
-# Start Gunicorn
-CMD ["gunicorn", "darwix_ai.wsgi:application", "--bind", "0.0.0.0:8000"] 
+# Start Gunicorn with memory limits
+CMD ["gunicorn", "darwix_ai.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--timeout", "120", "--max-requests", "1000", "--max-requests-jitter", "50"] 
