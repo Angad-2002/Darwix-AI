@@ -11,6 +11,7 @@ import logging
 import tempfile
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 
 from .services import TranscriptionService, TitleSuggestionService
 from .models import BlogPost, Transcription
@@ -123,3 +124,7 @@ def suggest_titles(request):
         error_msg = f"Error in suggest_titles: {str(e)}\n{traceback.format_exc()}"
         logger.error(error_msg)
         return JsonResponse({'error': str(e), 'traceback': traceback.format_exc()}, status=500)
+
+@api_view(['GET'])
+def health_check(request):
+    return Response({"status": "healthy"}, status=status.HTTP_200_OK)
